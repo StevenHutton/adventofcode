@@ -2,6 +2,7 @@
 #import "Windows";
 #import "File";
 
+//why read in the file when you can compile it directly into the code?
 generate_input_ints :: () -> string {
 		builder : String_Builder;
 		defer reset(*builder);
