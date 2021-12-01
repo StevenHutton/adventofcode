@@ -1,6 +1,7 @@
 #import "Basic";
 #import "Windows";
 #import "File";
+#import "Machine_X64";
 
 //why read in the file when you can compile it directly into the code?
 generate_input_ints :: () -> string {
@@ -31,19 +32,41 @@ generate_input_ints :: () -> string {
 		return builder_to_string(*builder);
 }
 
+timer_macro :: (code : Code) -> s64 #expand {
+	begin_counter, end_counter, perf_frequency : s64;
+	begin_cycle_count, end_cycle_count : u64;
+	QueryPerformanceCounter(*begin_counter);
+	QueryPerformanceFrequency(*perf_frequency);
+	begin_cycle_count = rdtsc();
+
+	#insert code;
+
+	QueryPerformanceCounter(*end_counter);
+	end_cycle_count = rdtsc();
+	elasped_cycles := end_cycle_count - begin_cycle_count;
+	elapsed_time := (1000 * (end_counter - begin_counter)) / perf_frequency;
+	
+	print("PF : %\n", perf_frequency);
+	print("Time : %ms, MegaCycles : %, QPC : %\n", elapsed_time, elasped_cycles / (1000*1000), end_counter - begin_counter);
+	return elapsed_time;
+}
+
 main :: ()
 {
-	ints := #insert #run generate_input_ints();
-	
-	last_value := 0;
-	increment_count := 0;
-	for ints {
-		if last_value != 0 && it > last_value {
-			increment_count += 1;
+	timer_macro(#code {
+			ints := #insert #run generate_input_ints();
+			
+			last_value := 0;
+			increment_count := 0;
+			for ints {
+				if last_value != 0 && it > last_value {
+					increment_count += 1;
+				}
+				
+				last_value = it;
+			}	
+			
+			print("Increment Count %\n", increment_count);
 		}
-		
-		last_value = it;
-	}	
-	
-	print("Increment Count %\n", increment_count);
+	);
 }

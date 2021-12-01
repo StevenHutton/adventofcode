@@ -1,1 +1,1 @@
-jai day1_part1_alternate.jai
+jai day1/day1_part1_alternate.jai
