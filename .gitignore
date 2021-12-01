@@ -34,7 +34,4 @@
 *.app
 
 #directories
-*/build
-build
-build/*
 !libs/win*
