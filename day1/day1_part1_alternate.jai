@@ -32,7 +32,7 @@ generate_input_ints :: () -> string {
 		return builder_to_string(*builder);
 }
 
-timer_macro :: (code : Code) -> s64 #expand {
+timer_macro :: (code : Code) -> float #expand {
 	begin_counter, end_counter, perf_frequency : s64;
 	begin_cycle_count, end_cycle_count : u64;
 	QueryPerformanceCounter(*begin_counter);
@@ -44,29 +44,29 @@ timer_macro :: (code : Code) -> s64 #expand {
 	QueryPerformanceCounter(*end_counter);
 	end_cycle_count = rdtsc();
 	elasped_cycles := end_cycle_count - begin_cycle_count;
-	elapsed_time := (1000 * (end_counter - begin_counter)) / perf_frequency;
+	elapsed_time := (1000 * (cast(float)(end_counter - begin_counter))) / perf_frequency;
 	
-	print("PF : %\n", perf_frequency);
 	print("Time : %ms, MegaCycles : %, QPC : %\n", elapsed_time, elasped_cycles / (1000*1000), end_counter - begin_counter);
 	return elapsed_time;
 }
 
+ints := #insert #run generate_input_ints();
+
 main :: ()
 {
-	timer_macro(#code {
-			ints := #insert #run generate_input_ints();
-			
+	increment_count := 0;
+	timer_macro(#code {									
 			last_value := 0;
-			increment_count := 0;
+					
 			for ints {
 				if last_value != 0 && it > last_value {
 					increment_count += 1;
 				}
 				
 				last_value = it;
-			}	
-			
-			print("Increment Count %\n", increment_count);
+			}			
 		}
 	);
+	
+	print("Increment Count %\n", increment_count);	
 }
