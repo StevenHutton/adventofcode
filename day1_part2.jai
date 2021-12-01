@@ -24,7 +24,7 @@ main :: ()
 	cursor : string;
 	cursor.data = file_contents.data;
 	cursor.count = 0;
-		
+	
 	//parse the file to ints.
 	for 0..file_contents.count-1 {
 		if is_space(file_contents[it]) {
@@ -44,16 +44,19 @@ main :: ()
 	if !to_int_success {
 		print("to int error\n");
 	}
+	
 	array_add(*ints, value);	
 	
 	last_value := 0;
-	increment_count := 0;	
-	for ints {
-		if last_value != 0 && it > last_value {
+	increment_count := 0;
+	for 0..ints.count-3 {
+		new_value := ints[it] + ints[it+1] + ints[it+2];
+		
+		if last_value != 0 && new_value > last_value {
 			increment_count += 1;
 		}
 		
-		last_value = it;
+		last_value = new_value;
 	}	
 	
 	print("Increment Count %\n", increment_count);
