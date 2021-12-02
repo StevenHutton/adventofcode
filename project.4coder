@@ -19,6 +19,7 @@ load_paths = {
             {"/", .relative = true, .recursive = true, }, 
 			{"C:/jai/modules/", .relative = false, .recursive = false, },
 			{"C:/jai/modules/Basic/", .relative = false, .recursive = true, },
+			{"C:/jai/modules/String/", .relative = false, .recursive = true, },
 			{"C:/jai/modules/Windows/", .relative = false, .recursive = true, },
 			{"C:/jai/modules/Windows_Utf8/", .relative = false, .recursive = true, },
 			{"C:/jai/modules/Math/", .relative = false, .recursive = true, },

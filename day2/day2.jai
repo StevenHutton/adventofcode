@@ -8,14 +8,14 @@ file_open_and_read_all :: () -> string
 {
 	file, open_success := file_open("input2.txt", false, true, true);
 	if !open_success {
-		print("error opening file");
+		print("error opening file\n");
 		return "";
 	}
 	defer file_close(*file);
 	
 	file_contents, read_succes := read_entire_file(file, false);
 	if !read_succes {
-		print("error reading file");
+		print("error reading file\n");
 		return "";
 	}
 	return file_contents;
@@ -27,7 +27,7 @@ direction :: enum {
 	up;
 }
 
-puzzle_func :: ()
+puzzle_func_2 :: ()
 {
 	file_content_prime := file_open_and_read_all();
 	defer free(file_content_prime);
@@ -76,7 +76,7 @@ main :: ()
 	QueryPerformanceFrequency(*perf_frequency);
 	begin_cycle_count = rdtsc();
 	
-	puzzle_func();
+	puzzle_func_2();
 
 	QueryPerformanceCounter(*end_counter);
 	end_cycle_count = rdtsc();
