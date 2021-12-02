@@ -1,5 +1,5 @@
-jai day1/day1_part1_alternate.jai -release
+jai day2/day2_part1.jai
 
-pushd day1
-day1_part1_alternate.exe
+pushd day2
+day2_part1.exe
 popd
