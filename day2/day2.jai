@@ -27,6 +27,45 @@ direction :: enum {
 	up;
 }
 
+puzzle_func_1 :: ()
+{
+	file_content_prime := file_open_and_read_all();
+	defer free(file_content_prime);
+	
+	file_content := file_content_prime;	
+	
+	out_int : int;
+	out_dir : direction;
+	success : bool;
+	
+	depth := 0;
+	pos := 0;
+	while file_content.count > 0 {		
+		out_dir, success = parse_enum(*file_content, direction, DEFAULT_DELIMITERS, " \t\n");
+		out_int, success = parse_int(*file_content, int, " \t\n", DEFAULT_DELIMITERS);
+		
+		if out_dir == {
+			case .down;
+			{
+				depth += out_int;
+			}
+			case .forward;
+			{
+				pos += out_int;
+				if depth < 0 depth = 0;
+			}
+			case .up;
+			{
+				depth -= out_int;
+			}
+		}
+	}
+	
+	print("Depth : %\n", depth);
+	print("Horizontal Pos : %\n", pos);
+	print("Solution : %\n", pos*depth);
+}
+
 puzzle_func_2 :: ()
 {
 	file_content_prime := file_open_and_read_all();
@@ -48,17 +87,17 @@ puzzle_func_2 :: ()
 		if out_dir == {
 			case .down;
 			{
-				aim += xx out_int;
+				aim += out_int;
 			}
 			case .forward;
 			{
-				pos += xx out_int;
+				pos += out_int;
 				depth += aim * out_int;				
 				if depth < 0 depth = 0;
 			}
 			case .up;
 			{
-				aim -= xx out_int;
+				aim -= out_int;
 			}
 		}
 	}
