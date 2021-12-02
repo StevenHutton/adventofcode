@@ -38,8 +38,9 @@ puzzle_func :: ()
 	out_dir : direction;
 	success : bool;
 	
-	depth : s32 = 0;
-	pos : s32= 0;
+	depth := 0;
+	pos := 0;
+	aim := 0;
 	while file_content.count > 0 {		
 		out_dir, success = parse_enum(*file_content, direction, DEFAULT_DELIMITERS, " \t\n");
 		out_int, success = parse_int(*file_content, int, " \t\n", DEFAULT_DELIMITERS);
@@ -47,16 +48,17 @@ puzzle_func :: ()
 		if out_dir == {
 			case .down;
 			{
-				depth += xx out_int;
+				aim += xx out_int;
 			}
 			case .forward;
 			{
 				pos += xx out_int;
+				depth += aim * out_int;				
+				if depth < 0 depth = 0;
 			}
 			case .up;
 			{
-				depth -= xx out_int;
-				if depth < 0 depth = 0;
+				aim -= xx out_int;
 			}
 		}
 	}
