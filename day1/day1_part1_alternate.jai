@@ -32,13 +32,6 @@ generate_input_ints :: () -> string {
 		return builder_to_string(*builder);
 }
 
-timer_macro :: (code : Code) -> float #expand {
-	
-
-	#insert code;
-	return elapsed_time;
-}
-
 ints := #insert #run generate_input_ints();
 
 main :: ()
