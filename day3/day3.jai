@@ -30,7 +30,7 @@ generate_input :: () -> string {
 	
 	lines := split(file_content,"\n");
 	
-	print_to_builder(*builder, "u16.[");
+	print_to_builder(*builder, "int.[");
 	for lines {
 		print_to_builder(*builder, "0b%\n,", it);
 	}
@@ -42,25 +42,17 @@ ints := #insert #run generate_input();
 
 puzzle_func :: ()
 {	
-	comparator := 0b100000000000;
+	comparator :int = 0b100000000000;
 	gamma : int;
 	epsilon : int;
 	
 	for 0..11 {
 		set_count := 0;
 		unset_count := 0;
-
-		for ints {
-			value := it & comparator;
-			if value != 0 {
-				set_count += 1;
-			}
-			else {
-				unset_count += 1;
-			}
-		}
 		
-		if set_count > unset_count {
+		most_common := get_most_common_bit(ints, comparator);
+		
+		if most_common {
 			gamma = gamma | comparator;
 			epsilon = epsilon & ~comparator;
 		}
@@ -77,16 +69,11 @@ puzzle_func :: ()
 	print("%\n",gamma*epsilon);
 }
 
-puzzle_func_2 :: ()
-{
-	comparator : u64 = 0b100000000000;
-	
-	o2 : [..]int;
-	co2 : [..]int;	
+get_most_common_bit :: (values : []int, comparator : int, tie_breaker : bool = true) -> bool {
 	set_count := 0;
 	unset_count := 0;
 	
-	for ints {
+	for values {
 		value := it & comparator;
 		if value != 0 {
 			set_count += 1;
@@ -96,15 +83,78 @@ puzzle_func_2 :: ()
 		}
 	}
 	
-	for ints {
-		
+	if set_count == unset_count return tie_breaker;
+	
+	return ifx set_count > unset_count then true else false;
+}
+
+get_least_common_bit :: (values : []int, comparator : int, tie_breaker : bool = true) -> bool {
+	set_count := 0;
+	unset_count := 0;
+	
+	for values {
+		value := it & comparator;
+		if value != 0 {
+			set_count += 1;
+		}
+		else {
+			unset_count += 1;
+		}
 	}
 	
-	for 0..11 {
-		
-		
-		comparator = comparator >> 1;
+	if set_count == unset_count return tie_breaker;
+	
+	return ifx set_count > unset_count then false else true;
+}
+
+puzzle_func_2 :: ()
+{
+	comparator := 0b100000000000;
+	
+	o2 : [..]int;
+	co2 : [..]int;
+	
+	most_common := get_most_common_bit(ints, comparator);
+	
+	for ints {
+		if (it & comparator) > 0 == most_common {
+			array_add(*o2, it);
+		}
+		else {
+			array_add(*co2, it);
+		}
 	}
+	
+	print("%\n", o2);
+	print("%\n", co2);
+	
+	while o2.count > 1 {
+		comparator = comparator >> 1;
+		most_common = get_most_common_bit(o2, comparator);
+		
+		for o2 {
+			if (it & comparator) > 0 != most_common {
+				remove it;
+			}
+		}
+	}
+	
+	comparator = 0b100000000000;
+	
+	while co2.count > 1 {
+		comparator = comparator >> 1;
+		most_common = get_least_common_bit(co2, comparator, false);
+		
+		for co2 {
+			if (it & comparator) > 0 != most_common {
+				remove it;
+			}
+		}
+	}
+	
+	print("o2 : %\n", o2[0]);
+	print("o2 : %\n", co2[0]);
+	print("answer : %\n", o2[0] *co2[0]);
 }
 
 main :: ()

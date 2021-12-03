@@ -2,7 +2,7 @@
 //
 // #insert text. Generated from D:/Projects/jai/adventofcode/day3/day3.jai:41.
 //
-u16.[0b011000110010
+int.[0b011000110010
 ,0b111011101000
 ,0b110100110010
 ,0b011010101110
