@@ -136,6 +136,7 @@ main :: ()
 	temp_context := context;
 	temp_context.allocator = temp;
 	
+	//not the intended use of the temp allocator but honestly I just got lazy...
 	push_context temp_context {		
 		calls : [..]int;
 		tables : [..][25]int;
