@@ -22,9 +22,13 @@ file_open_and_read_all :: () -> string
 
 puzzle_func :: ()
 {
+	
 }
 
-puzzle_func_2 :: (){}
+puzzle_func_2 :: ()
+{
+	
+}
 
 main :: ()
 {
