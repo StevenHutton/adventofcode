@@ -77,10 +77,27 @@ table_wins_at :: (table : [25]int) -> int
 	return earliest_win;
 }
 
+score_table :: (table : [25]int, won_at : int) -> int
+{
+	won_at_value := calls[won_at];
+	
+	calls_up_to_win : []int;
+	calls_up_to_win = calls;
+	calls_up_to_win.count = won_at+1;
+	score := 0;
+	
+	for table {
+		if !array_find(calls_up_to_win, it) {
+			score += it;
+		}
+	}
+	
+	return score * won_at_value;
+}
+
 puzzle_func :: ()
 {
 	print("Day4 Puzzle 1 \n");
-	read_input();
 	
 	earlist_win := 99000;
 	winning_table := -1;
@@ -91,25 +108,12 @@ puzzle_func :: ()
 			winning_table = it_index;
 		}
 	}
-	
-	won_at_value := calls[earlist_win];
-	
-	calls.count = earlist_win+1;
-	score := 0;
-	
-	for tables[winning_table] {
-		if !array_find(calls, it) {
-			score += it;
-		}
-	}
-	
-	print("Answer : %\n", score * won_at_value);
+	print("Answer : %\n", score_table(tables[winning_table], earlist_win));
 }
 
 puzzle_func_2 :: ()
 {
 	print("Day4 Puzzle 1 \n");
-	read_input();
 	
 	latest_win := 0;
 	losing_table := -1;
@@ -120,19 +124,7 @@ puzzle_func_2 :: ()
 			losing_table = it_index;
 		}
 	}
-	
-	won_at_value := calls[latest_win];
-	
-	calls.count = latest_win+1;
-	score := 0;
-	
-	for tables[losing_table] {
-		if !array_find(calls, it) {
-			score += it;
-		}
-	}
-	
-	print("Answer : %\n", score * won_at_value);
+	print("Answer : %\n", score_table(tables[losing_table], latest_win));
 }
 
 main :: ()
@@ -146,7 +138,8 @@ main :: ()
 	temp_context := context;
 	temp_context.allocator = temp;
 	
-	push_context temp_context {							
+	push_context temp_context {
+		read_input();
 		puzzle_func();
 		puzzle_func_2();
 	}
@@ -155,8 +148,8 @@ main :: ()
 	QueryPerformanceCounter(*end_counter);
 	end_cycle_count = rdtsc();
 	elasped_cycles := end_cycle_count - begin_cycle_count;
-	elapsed_time := (1000 * 1000 * (cast(float)(end_counter - begin_counter))) / perf_frequency;
+	elapsed_time := (1000 * (cast(float)(end_counter - begin_counter))) / perf_frequency;
 	
-	print("Time : %us, MegaCycles : %, QPC : %\n", elapsed_time,
+	print("Time : %ms, MegaCycles : %, QPC : %\n", elapsed_time,
 		  elasped_cycles / (1000*1000), end_counter - begin_counter);
 }
