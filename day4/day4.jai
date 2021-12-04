@@ -21,17 +21,15 @@ file_open_and_read_all :: (path : string) -> string
 	return file_contents;
 }
 
-calls : [..]int;
-tables : [..][25]int;
 
-read_input :: ()
+read_input :: (calls : *[..]int, tables : *[..][25]int)
 {	
 	file_contents := file_open_and_read_all("input.txt");	
 	success, numbers_string, tables_string := split_from_left(file_contents, #char "\n");
 	
 	while numbers_string.count > 0 {
 		number := parse_int(*numbers_string, int, " ,", DEFAULT_DELIMITERS);
-		array_add(*calls, number);
+		array_add(calls, number);
 	}
 	
 	while tables_string.count > 0 {
@@ -40,11 +38,11 @@ read_input :: ()
 			out_int := parse_int(*tables_string, int, " \t\n", DEFAULT_DELIMITERS);
 			table[it] = out_int;
 		}
-		array_add(*tables, table);
+		array_add(tables, table);
 	}
 }
 
-table_wins_at :: (table : [25]int) -> int
+table_wins_at :: (table : [25]int, calls: [..]int) -> int
 {
 	earliest_win := 99000;//arbitrarily high number because I can't remember the jai version of INT_MAX;
 	//rows
@@ -77,7 +75,7 @@ table_wins_at :: (table : [25]int) -> int
 	return earliest_win;
 }
 
-score_table :: (table : [25]int, won_at : int) -> int
+score_table :: (table : [25]int, won_at : int, calls : [..]int) -> int
 {
 	won_at_value := calls[won_at];
 	
@@ -95,36 +93,36 @@ score_table :: (table : [25]int, won_at : int) -> int
 	return score * won_at_value;
 }
 
-puzzle_func :: ()
+puzzle_func :: (calls : [..]int, tables : [..][25]int)
 {
 	print("Day4 Puzzle 1 \n");
 	
 	earlist_win := 99000;
 	winning_table := -1;
 	for tables {
-		value := table_wins_at(it);
+		value := table_wins_at(it, calls);
 		if value < earlist_win {
 			earlist_win = value;
 			winning_table = it_index;
 		}
 	}
-	print("Answer : %\n", score_table(tables[winning_table], earlist_win));
+	print("Answer : %\n", score_table(tables[winning_table], earlist_win, calls));
 }
 
-puzzle_func_2 :: ()
+puzzle_func_2 :: (calls : [..]int, tables : [..][25]int)
 {
 	print("Day4 Puzzle 1 \n");
 	
 	latest_win := 0;
 	losing_table := -1;
 	for tables {
-		value := table_wins_at(it);
+		value := table_wins_at(it, calls);
 		if value > latest_win {
 			latest_win = value;
 			losing_table = it_index;
 		}
 	}
-	print("Answer : %\n", score_table(tables[losing_table], latest_win));
+	print("Answer : %\n", score_table(tables[losing_table], latest_win, calls));
 }
 
 main :: ()
@@ -138,10 +136,12 @@ main :: ()
 	temp_context := context;
 	temp_context.allocator = temp;
 	
-	push_context temp_context {
-		read_input();
-		puzzle_func();
-		puzzle_func_2();
+	push_context temp_context {		
+		calls : [..]int;
+		tables : [..][25]int;
+		read_input(*calls, *tables);
+		puzzle_func(calls, tables);
+		puzzle_func_2(calls, tables);
 	}
 	reset_temporary_storage();
 	
