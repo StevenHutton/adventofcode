@@ -2,10 +2,11 @@
 #import "Windows";
 #import "File";
 #import "Machine_X64";
+#import "String";
 
-file_open_and_read_all :: () -> string
+file_open_and_read_all :: (path : string) -> string
 {
-	file, open_success := file_open("input2.txt", false, true, true);
+	file, open_success := file_open(path, false, true, true);
 	if !open_success {
 		print("error opening file");
 		return "";

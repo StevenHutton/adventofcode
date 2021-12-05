@@ -1,8 +1,8 @@
 @echo off
 
-jai day4/day4.jai
+jai day5/day5.jai
 
-pushd day4
-day4.exe
+pushd day5
+day5.exe
 popd
 

@@ -22,14 +22,17 @@ file_open_and_read_all :: (path : string) -> string
 }
 
 
-read_input :: (calls : *[..]int, tables : *[..][25]int)
-{	
+read_input :: () -> [..]int, [..][25]int
+{
+	calls : [..]int;
+	tables : [..][25]int;
+	
 	file_contents := file_open_and_read_all("input.txt");	
 	success, numbers_string, tables_string := split_from_left(file_contents, #char "\n");
 	
 	while numbers_string.count > 0 {
 		number := parse_int(*numbers_string, int, " ,", DEFAULT_DELIMITERS);
-		array_add(calls, number);
+		array_add(*calls, number);
 	}
 	
 	while tables_string.count > 0 {
@@ -38,8 +41,10 @@ read_input :: (calls : *[..]int, tables : *[..][25]int)
 			out_int := parse_int(*tables_string, int, " \t\n", DEFAULT_DELIMITERS);
 			table[it] = out_int;
 		}
-		array_add(tables, table);
+		array_add(*tables, table);
 	}
+	
+	return calls, tables;
 }
 
 table_wins_at :: (table : [25]int, calls: [..]int) -> int
@@ -137,10 +142,10 @@ main :: ()
 	temp_context.allocator = temp;
 	
 	//not the intended use of the temp allocator but honestly I just got lazy...
-	push_context temp_context {		
+	push_context temp_context {
 		calls : [..]int;
 		tables : [..][25]int;
-		read_input(*calls, *tables);
+		calls, tables = read_input();
 		puzzle_func(calls, tables);
 		puzzle_func_2(calls, tables);
 	}
@@ -151,6 +156,6 @@ main :: ()
 	elasped_cycles := end_cycle_count - begin_cycle_count;
 	elapsed_time := (1000 * (cast(float)(end_counter - begin_counter))) / perf_frequency;
 	
-	print("Time : %ms, MegaCycles : %, QPC : %\n", elapsed_time,
-		  elasped_cycles / (1000*1000), end_counter - begin_counter);
+	print("Time : %ms, MegaCycles : %\n", elapsed_time,
+		  elasped_cycles / (1000*1000));
 }
